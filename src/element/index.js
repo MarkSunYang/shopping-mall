@@ -1,7 +1,12 @@
 import Vue from 'vue'
 
 //导入弹窗提示组件
-import { Message, Form, FormItem, Input, Button, Main, Aside, Header, Container, Menu, MenuItem,Submenu,MenuItemGroup } from 'element-ui'
+import {
+    Message, Form, FormItem, Input, Button, Main, Aside, Header,
+    Container, Menu, MenuItem, Submenu, MenuItemGroup,
+    Breadcrumb, BreadcrumbItem, Card, Row, Col,
+    Table,TableColumn,Switch,Tooltip,Pagination
+} from 'element-ui'
 
 
 //全局组件注册
@@ -17,5 +22,15 @@ Vue.use(Menu)
 Vue.use(MenuItem)
 Vue.use(Submenu)
 Vue.use(MenuItemGroup)
+Vue.use(Breadcrumb)
+Vue.use(BreadcrumbItem)
+Vue.use(Card)
+Vue.use(Row)
+Vue.use(Col)
+Vue.use(Table)
+Vue.use(TableColumn)
+Vue.use(Switch)
+Vue.use(Tooltip)
+Vue.use(Pagination)
 
 Vue.prototype.$message = Message

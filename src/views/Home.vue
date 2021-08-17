@@ -20,6 +20,7 @@
           :collapse="iscollapse"
           :collapse-transition="false"
           router=""
+          :default-active="activePath"
         >
           <!-- 一级-->
           <el-submenu
@@ -39,6 +40,8 @@
               :index="'/'+subitem.path"
               v-for="subitem in item.children"
               :key="subitem.id"
+             
+              @click="saveStatus('/'+subitem.path)"
             >
               <!-- 图标-->
               <i class="el-icon-menu"></i>
@@ -62,10 +65,12 @@ export default {
       menuList: [],
       //是否折叠
       iscollapse: false,
+      activePath: ''
     };
   },
   created() {
     this.getMenuList();
+    this.activePath=window.sessionStorage.getItem('activePath')
   },
   methods: {
     logout() {
@@ -82,6 +87,10 @@ export default {
       //菜单的折叠展开
       this.iscollapse = !this.iscollapse;
     },
+    saveStatus(activePath){
+      window.sessionStorage.setItem('activePath',activePath)
+      this.activePath=activePath
+    }
   },
 };
 </script>
