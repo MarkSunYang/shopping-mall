@@ -57,6 +57,7 @@
               type="primary"
               icon="el-icon-edit"
               size="mini"
+              @click="showEditDialog(scope.row.id)"
             ></el-button>
           </el-tooltip>
 
@@ -129,6 +130,34 @@
         <el-button type="primary" @click="addUser">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog title="修改用户" :visible.sync="editDialogVisible" width="50%">
+      <span>
+        <el-form
+          :model="editForm"
+          :rules="editFormRules"
+          ref="editFormRef"
+          label-width="100px"
+          class="demo-ruleForm"
+        >
+          <el-form-item label="用户名" prop="username">
+            <el-input v-model="editForm.username" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="手机" prop="mobile">
+            <el-input v-model="editForm.mobile"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="editForm.email"></el-input>
+          </el-form-item>
+        </el-form>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editDialogVisible = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -161,6 +190,8 @@ export default {
       total: 0,
       //对话框的显示隐藏
       addDialogVisible: false,
+      //修改用户对话框
+      editDialogVisible: false,
       addForm: {
         username: "",
         email: "",
@@ -191,6 +222,8 @@ export default {
           // },
         ],
       },
+      editForm: {},
+      editFormRules: {},
     };
   },
   created() {
@@ -233,14 +266,29 @@ export default {
     //点击按钮，添加新用户
     addUser() {
       //预校验
-      this.$refs.addFormRef.validate(async val => {
+      this.$refs.addFormRef.validate(async (val) => {
         console.log(val);
         // 提交请求
         const { data: res } = await this.$http.post("users", this.addForm);
-        if(res.meta.status!=200) this.$message.error('添加用户失败')
-        this.$message.success('添加用户成功')
-        this.addDialogVisible=false
-        this.getUserList()
+        if (res.meta.status != 200) this.$message.error("添加用户失败");
+        this.$message.success("添加用户成功");
+        this.addDialogVisible = false;
+        this.getUserList();
+      });
+    },
+    async showEditDialog(id) {
+      this.editDialogVisible = true;
+      console.log(id);
+
+      const { data: res } = await this.$http.get("users/" + id);
+      if (res.meta.status !== 200)
+        return this.$message.error("查询用户信息失败");
+      this.editForm = res.data;
+    },
+    editUserInfo() {
+     const {data:res} = this.$http.put("users/" + this.editForm.id, {
+        email: this.editForm.email,
+        mobile: this.editForm.mobile,
       });
     },
   },

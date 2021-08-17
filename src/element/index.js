@@ -5,7 +5,7 @@ import {
     Message, Form, FormItem, Input, Button, Main, Aside, Header,
     Container, Menu, MenuItem, Submenu, MenuItemGroup,
     Breadcrumb, BreadcrumbItem, Card, Row, Col,
-    Table,TableColumn,Switch,Tooltip,Pagination,Dialog
+    Table,TableColumn,Switch,Tooltip,Pagination,Dialog,Tag
 } from 'element-ui'
 
 
@@ -33,6 +33,6 @@ Vue.use(Switch)
 Vue.use(Tooltip)
 Vue.use(Pagination)
 Vue.use(Dialog)
-
+Vue.use(Tag)
 
 Vue.prototype.$message = Message
