@@ -35,13 +35,12 @@
               <!-- 文本-->
               <span>{{ item.authName }}</span>
             </template>
-              <!-- 二级菜单-->
+            <!-- 二级菜单-->
             <el-menu-item
-              :index="'/'+subitem.path"
+              :index="'/' + subitem.path"
               v-for="subitem in item.children"
               :key="subitem.id"
-             
-              @click="saveStatus('/'+subitem.path)"
+              @click="saveStatus('/' + subitem.path)"
             >
               <!-- 图标-->
               <i class="el-icon-menu"></i>
@@ -65,12 +64,12 @@ export default {
       menuList: [],
       //是否折叠
       iscollapse: false,
-      activePath: ''
+      activePath: "",
     };
   },
   created() {
     this.getMenuList();
-    this.activePath=window.sessionStorage.getItem('activePath')
+    this.activePath = window.sessionStorage.getItem("activePath");
   },
   methods: {
     logout() {
@@ -87,10 +86,10 @@ export default {
       //菜单的折叠展开
       this.iscollapse = !this.iscollapse;
     },
-    saveStatus(activePath){
-      window.sessionStorage.setItem('activePath',activePath)
-      this.activePath=activePath
-    }
+    saveStatus(activePath) {
+      window.sessionStorage.setItem("activePath", activePath);
+      this.activePath = activePath;
+    },
   },
 };
 </script>

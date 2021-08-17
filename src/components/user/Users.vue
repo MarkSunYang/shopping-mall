@@ -12,12 +12,23 @@
     <el-card class="box-card">
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-input placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input
+            placeholder="请输入内容"
+            v-model="queryInfo.query"
+            clearable
+            @clear="getUserList"
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="getUserList"
+            ></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary">添加用户</el-button>
+          <el-button type="primary" @click="addDialogVisible = true"
+            >添加用户</el-button
+          >
         </el-col>
       </el-row>
     </el-card>
@@ -34,8 +45,7 @@
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.mg_state"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
+            @change="userstatuschange(scope.row)"
           >
           </el-switch>
         </template>
@@ -86,12 +96,61 @@
       >
       </el-pagination>
     </div>
+
+    <el-dialog
+      title="添加用户"
+      :visible.sync="addDialogVisible"
+      @close="addDialogClose"
+      width="50%"
+    >
+      <span>
+        <el-form
+          :model="addForm"
+          :rules="addFormRuls"
+          ref="addFormRef"
+          class="login_from"
+        >
+          <el-form-item label="用户名" prop="username">
+            <el-input v-model="addForm.username" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="addForm.email" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="addForm.password" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="电话" prop="mobile">
+            <el-input v-model="addForm.mobile" clearable></el-input>
+          </el-form-item>
+        </el-form>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
   data() {
+    //规则，值，回调
+    var checkEmail = (rule, value, cb) => {
+      var regemail = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+      if (regemail.test(value)) {
+        return cb();
+      }
+      cb(new Error("邮箱格式错误"));
+    };
+    // var checkphone = (rule, value, cb) => {
+    //   var regphone = /^1(3|4|5|6|7|8|9)d{9}$/;
+    //   if (regphone.test(value)) {
+    //     return cb();
+    //   }
+    //   cb(new Error("手机号码错误"));
+    // };
+
     return {
       queryInfo: {
         query: "",
@@ -100,6 +159,38 @@ export default {
       },
       userList: [],
       total: 0,
+      //对话框的显示隐藏
+      addDialogVisible: false,
+      addForm: {
+        username: "",
+        email: "",
+        mobile: "",
+      },
+      addFormRuls: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          {
+            min: 3,
+            max: 10,
+            message: "用户名长度在3-10个字符",
+            trigger: "blur",
+          },
+        ],
+        email: [
+          { required: true, message: "请输入邮箱", trigger: "blur" },
+          {
+            validator: checkEmail,
+            trigger: "blur",
+          },
+        ],
+        mobile: [
+          { required: true, message: "请输入手机号码", trigger: "blur" },
+          // {
+          //  validator: checkphone,
+          //   trigger: "blur",
+          // },
+        ],
+      },
     };
   },
   created() {
@@ -124,6 +215,33 @@ export default {
     handleCurrentChange(pagenum) {
       this.queryInfo.pagenum = pagenum;
       this.getUserList();
+    },
+    async userstatuschange(userinfo) {
+      console.log(userinfo);
+      const { data: res } = await this.$http.put(
+        `users/${userinfo.id}/state/${userinfo.mg_state}`
+      );
+
+      if (res.meta.status != 200) {
+        userinfo.mg_state = !userinfo.mg_state;
+        return this.$message.error("修改失败");
+      }
+    },
+    addDialogClose() {
+      this.$refs.addFormRef.resetFields();
+    },
+    //点击按钮，添加新用户
+    addUser() {
+      //预校验
+      this.$refs.addFormRef.validate(async val => {
+        console.log(val);
+        // 提交请求
+        const { data: res } = await this.$http.post("users", this.addForm);
+        if(res.meta.status!=200) this.$message.error('添加用户失败')
+        this.$message.success('添加用户成功')
+        this.addDialogVisible=false
+        this.getUserList()
+      });
     },
   },
 };
