@@ -50,7 +50,7 @@
                       v-for="(item3, i3) in item2.children"
                       :key="item3.key"
                       closable
-                      @close="removeById(scope.row,item3.id)"
+                      @close="removeById(scope.row, item3.id)"
                     >
                       {{ item3.authName }}
                     </el-tag>
@@ -71,13 +71,28 @@
             <el-button type="danger" icon="el-icon-delete" size="mini">
               删除</el-button
             >
-            <el-button type="warning" icon="el-icon-setting" size="mini" @click="showRightDialog"
+            <el-button
+              type="warning"
+              icon="el-icon-setting"
+              size="mini"
+              @click="showRightDialog"
               >分配权限</el-button
             >
           </template>
         </el-table-column>
       </el-table>
     </el-card>
+    <el-dialog title="分配权限" :visible.sync="rightDialogVisible" width="50%">
+      <span>
+        <el-tree :data="rightList" :props="treeProps" show-checkbox node-key="id" default-expand-all :default-checked-keys="defKeys"></el-tree>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="rightDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="rightDialogVisible = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -86,6 +101,15 @@ export default {
   data() {
     return {
       rolsList: [],
+      rightDialogVisible: false,
+      //所有权限数据
+      rightList: [],
+      //树控件的绑定对象
+      treeProps: {
+        label: "authName",
+        children: "children",
+      },
+      defKeys:[],
     };
   },
   created() {
@@ -100,7 +124,7 @@ export default {
       //this
     },
     //根据id删除权限
-    async removeById(role,rightId) {
+    async removeById(role, rightId) {
       //弹框提示用户是否删除
       const removeRes = await this.$confirm(
         "此操作将永久删除该文件, 是否继续?",
@@ -113,13 +137,23 @@ export default {
       ).catch((err) => err);
 
       if (removeRes !== "confirm") return this.$message.info("取消了删除！");
-      const { data: res } =await this.$http.delete(`roles/${role.id}/rights/${rightId}`)
+      const { data: res } = await this.$http.delete(
+        `roles/${role.id}/rights/${rightId}`
+      );
       if (res.meta.status !== 200) return this.$message.error("请求失败");
-      debugger
-      role.children=res.data
+      debugger;
+      role.children = res.data;
     },
     //分配权限对话框
-    showRightDialog(){
+    async showRightDialog() {
+      //获取所有权限数据
+      const { data: res } = await this.$http.get("rights/tree");
+      if (res.meta.status !== 200) return this.$message.error("请求失败");
+      this.rightList = res.data;
+      this.rightDialogVisible = true;
+    },
+    handleClose() {},
+    getLeafKeys(node,arr){
 
     }
   },
