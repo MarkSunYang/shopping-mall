@@ -5,7 +5,7 @@ import {
     Message, Form, FormItem, Input, Button, Main, Aside, Header,
     Container, Menu, MenuItem, Submenu, MenuItemGroup,
     Breadcrumb, BreadcrumbItem, Card, Row, Col,
-    Table,TableColumn,Switch,Tooltip,Pagination,Dialog,Tag,MessageBox,Tree
+    Table,TableColumn,Switch,Tooltip,Pagination,Dialog,Tag,MessageBox,Tree,Checkbox,CheckboxGroup,CheckboxButton
 } from 'element-ui'
 
 
@@ -35,6 +35,10 @@ Vue.use(Pagination)
 Vue.use(Dialog)
 Vue.use(Tag)
 Vue.use(Tree)
+Vue.use(Checkbox)
+Vue.use(CheckboxGroup)
+Vue.use(CheckboxButton)
+
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

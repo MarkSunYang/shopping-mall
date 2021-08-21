@@ -23,13 +23,15 @@
             prefix-icon="iconfont icon-3702mima"
           ></el-input>
         </el-form-item>
-
         <el-form-item class="btns">
           <el-button type="primary" @click="login">登录</el-button>
           <el-button type="info" @click="fromReset">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
+  </div>
+</template>
+
   </div>
 </template>
 
@@ -74,7 +76,7 @@ export default {
         //2.通过导航跳转到后台主页 路由地址是 /home
 
         window.sessionStorage.setItem("token", res.data.token);
-        this.$router.push('/home')
+        this.$router.push("/home");
       });
     },
   },

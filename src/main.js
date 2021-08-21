@@ -11,6 +11,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 import axios from 'axios'
 
+import TreeTable from 'vue-table-with-tree-grid'
+
 // 配置
 axios.defaults.baseURL='http://timemeetyou.com:8889/api/private/v1'
 
@@ -26,7 +28,7 @@ Vue.prototype.$http = axios
 
 
 Vue.config.productionTip = false
-
+Vue.component('tree-table',TreeTable)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
